@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<!-- manifest attribute is needed to use the application cache -->
+<!-- 
+    content-type for the cache manifest file has to be text/cache-manifest
+    It is configured in web.config
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" manifest="cache.manifest">
+<head>
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+    <!-- When width devices has a maximum value of 600px, media query will return true and load the smartphone.css-->
+    <link rel="stylesheet" media="(max-width: 600px)" href="css/smartphone.css" />
+    <!-- When width devices has a minimum value of 601px, media query will return true and load the tablet.css-->
+    <link rel="stylesheet" media="(min-width: 601px)" href="css/tablet.css" />
+
+    <script src="js/cacheevents.js"></script>
+
+</head>
+<body>
+    <h2>Home page</h2>
+</body>
+</html>
