@@ -1,0 +1,5 @@
+# Packages files
+packages.config
+
+# Packages directories
+Scripts/
