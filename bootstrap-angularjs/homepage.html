@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Bootstrap with AngularJS</title>
+
+    <script src="framework/angular.min.js"></script>
+    <script src="data/taskdata.js"></script>
+    <script src="controllers/homepage_contoller.js"></script>
+
+</head>
+<body ng-app="homepage" ng-controller="homepage_controller">
+
+    <table>
+        <tr ng-repeat="task in tasklist">
+            <td>{{task.name}}</td>
+            <td>{{task.target_datetime}}</td>
+        </tr>
+    </table>
+
+</body>
+</html>
