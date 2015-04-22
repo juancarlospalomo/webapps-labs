@@ -1,4 +1,3 @@
-﻿var app = angular.module('homepage', []);
-app.controller('homepage_controller', function ($scope) {
-    $scope.tasklist = tasklist;
-});
+﻿var app = angular.module('homepage', ['ngMaterial']);
+app.controller('homepage_controller');
+

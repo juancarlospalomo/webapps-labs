@@ -1,5 +1,6 @@
-# Packages files
+# files
 packages.config
+webapps-labs.sln
 
 # Packages directories
 Scripts/
