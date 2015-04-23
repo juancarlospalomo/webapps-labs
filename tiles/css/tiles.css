@@ -1,0 +1,31 @@
+﻿.homepage md-grid-list {
+    margin: 8px;
+}
+
+.homepage .gray {
+    background: #f5f5f5;
+}
+
+.homepage .green {
+    background: #b9f6ca;
+}
+
+.homepage .yellow {
+    background: #ffff8d;
+}
+
+.homepage .blue {
+    background: #84ffff;
+}
+
+.homepage .purple {
+    background: #b388ff;
+}
+
+.homepage .red {
+    background: #ff8a80;
+}
+
+.homepage md-grid-tile {
+    transition: all 400ms ease-out 50ms;
+}
