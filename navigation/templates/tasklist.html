@@ -1,0 +1,14 @@
+﻿<!-- HTML Template to fill in ui-view -->
+<div ng-app="tasklistApp" ng-controller="tasklist_controller">
+    <md-whiteframe class="md-whiteframe-z2" layout layout-align="left" ng-repeat="task in tasklist">
+        <md-list>
+            <md-list-item class="md-2-line">
+                <img ng-src="" class="md-avatar" alt="avatar">
+                <div class="md-list-item-text">
+                    <h3 class="md-headline">{{task.name}}</h3>
+                    <p>{{task.target_datetime}}</p>
+                </div>
+            </md-list-item>
+        </md-list>
+    </md-whiteframe>
+</div>

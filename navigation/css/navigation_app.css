@@ -1,0 +1,54 @@
+﻿body {
+    margin: 1em;
+    background-color: beige;
+}
+
+md-whiteframe {
+    background: #fff;
+    margin: 1em 0;
+    padding: 0px;
+}
+
+.pop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+/**
+    ng-enter is the starting class for the enter animation. Navigate to template.
+*/
+.pop.ng-enter {
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+
+/**
+    ng-enter-active is the destination class (end) for the enter animation. Navigate to template.
+*/
+.pop.ng-enter-active {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+/**
+    ng-leave is the starting class for the exit animation.  Leave the template.
+*/
+.pop.ng-leave {
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+/**
+    ng-leave is the destination class (end) the exit animation.  Leave the template.
+*/
+.pop.ng-leave-active {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+    
