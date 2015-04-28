@@ -1,4 +1,8 @@
-﻿md-whiteframe {
+﻿body {
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+md-whiteframe {
   background: #fff;
   margin: 20px;
   padding: 20px; }
