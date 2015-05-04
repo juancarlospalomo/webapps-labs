@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <!-- viewport for web apps -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--  Angulars Material CSS using local bower_components -->
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css" />
+
+</head>
+<body ng-app="chipsApp" ng-controller="chipsController">
+
+    <md-content>
+        <div layout="row">
+            <md-chips>
+                <md-chip>
+                    .NET Framework
+                </md-chip>
+            </md-chips>
+        </div>
+    </md-content>
+
+    <!-- Angular Material Dependencies -->
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.min.js"></script>
+
+    <!-- Angular Material Javscript -->
+    <script src="bower_components/angular-material/angular-material.min.js"></script>
+
+    <script>
+        var app = angular.module('chipsApp', ['ngMaterial']);
+
+        app.controller('chipsController', function ($scope) {
+
+        });
+
+        app.config(function ($mdThemingProvider) {
+            $mdThemingProvider.theme('default')
+              .primaryPalette('blue');
+        });
+
+    </script>
+
+</body>
+</html>
