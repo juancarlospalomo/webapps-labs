@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <meta charset="utf-8" />
+    <!-- viewport for web apps -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+
+    <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css">
+
+
+</head>
+<body ng-app="dividerApp" ng-controller="homepage_controller">
+
+    <div>
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <md-button>Who I am</md-button>
+            </div>
+        </md-toolbar>
+
+    </div>
+
+    <div>
+        <md-content>
+
+            <md-list>
+                <md-list-item class="md-3-lines">
+                    <div class="md-list-item-text">
+                        <h3>2013 - Actualmente</h3>
+                        <h4>Posición:  Arquitecto de solución y desarrollador</h4>
+                        <h4>Función:   Desarrollo de aplicaciones web propias y para dispositivos Android</h4>
+                    </div>
+                </md-list-item>
+                <md-divider></md-divider>
+
+                <md-list-item class="md-3-lines">
+                    <div class="md-list-item-text">
+                        <h3>2011 - 2013 Servicio de Mantenimiento de Chevrolet Europa</h3>
+                        <h4>Posición:  Application Lead</h4>
+                        <h4>Función:   Desarrollo de aplicaciones web propias y para dispositivos Android</h4>
+                    </div>
+                </md-list-item>
+
+            </md-list>
+
+
+            <md-chips>
+                <md-chip>.NET Framework 4.5</md-chip>
+            </md-chips>
+
+        </md-content>
+    </div>
+
+
+    <!-- Angular Material Dependencies -->
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="../bower_components/angular-aria/angular-aria.min.js"></script>
+
+    <!-- Angular Material Javscript -->
+    <script src="../bower_components/angular-material/angular-material.min.js"></script>
+
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+
+    <script>
+
+        var app = angular.module('dividerApp', ['ngMaterial', 'ui.router']);
+
+        app.controller("homepage_controller", function ($scope) {
+
+        });
+
+    </script>
+
+
+
+</body>
+</html>

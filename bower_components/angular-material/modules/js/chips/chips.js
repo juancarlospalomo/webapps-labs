@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.9.0
+ * v0.9.0-master-160f790
  */
 (function () {
 "use strict";
@@ -86,17 +86,19 @@ angular
  *
  * @description
  * `<md-chip-remove>`
- * Designates a button as a trigger to remove the chip.
+ * Designates an element to be used as the delete button for a chip. This
+ * element is passed as a child of the `md-chips` element.
  *
  * @usage
  * <hljs lang="html">
- *   <md-chip-template>{{$chip}}<button md-chip-remove>DEL</button></md-chip-template>
+ *   <md-chips><button md-chip-remove>DEL</button></md-chips>
  * </hljs>
  */
 
 
 /**
- *
+ * MdChipRemove Directive Definition.
+ * 
  * @param $compile
  * @param $timeout
  * @returns {{restrict: string, require: string[], link: Function, scope: boolean}}
@@ -642,6 +644,7 @@ var CHIP_REMOVE_TEMPLATE = '\
         class="md-chip-remove"\
         ng-if="!$mdChipsCtrl.readonly"\
         ng-click="$mdChipsCtrl.removeChipAndFocusInput($$replacedScope.$index)"\
+        type="button"\
         aria-hidden="true"\
         tabindex="-1">\
       <md-icon md-svg-icon="md-close"></md-icon>\
@@ -653,7 +656,7 @@ var CHIP_REMOVE_TEMPLATE = '\
 /**
  * MDChips Directive Definition
  */
-function MdChips ($mdTheming, $mdUtil, $compile, $timeout) {
+function MdChips ($mdTheming, $mdUtil, $compile, $log, $timeout) {
   return {
     template: function(element, attrs) {
       // Clone the element into an attribute. By prepending the attribute
@@ -715,12 +718,17 @@ function MdChips ($mdTheming, $mdUtil, $compile, $timeout) {
 
     // Set the chip remove, chip contents and chip input templates. The link function will put
     // them on the scope for transclusion later.
-    var chipRemoveTemplate   = getTemplateByQuery('[md-chip-remove]') || CHIP_REMOVE_TEMPLATE,
-        chipContentsTemplate = getTemplateByQuery('md-chip-template') || CHIP_DEFAULT_TEMPLATE,
-        chipInputTemplate    = getTemplateByQuery('md-autocomplete')
-            || getTemplateByQuery('input')
+    var chipRemoveTemplate   = getTemplateByQuery('md-chips>*[md-chip-remove]') || CHIP_REMOVE_TEMPLATE,
+        chipContentsTemplate = getTemplateByQuery('md-chips>md-chip-template') || CHIP_DEFAULT_TEMPLATE,
+        chipInputTemplate    = getTemplateByQuery('md-chips>md-autocomplete')
+            || getTemplateByQuery('md-chips>input')
             || CHIP_INPUT_TEMPLATE,
         staticChips = userTemplate.find('md-chip');
+
+    // Warn of malformed template. See #2545
+    if (userTemplate[0].querySelector('md-chip-template>*[md-chip-remove]')) {
+      $log.warn('invalid placement of md-chip-remove within md-chip-template.');
+    }
 
     function getTemplateByQuery (query) {
       if (!attr.ngModel) return;
@@ -774,7 +782,7 @@ function MdChips ($mdTheming, $mdUtil, $compile, $timeout) {
     };
   }
 }
-MdChips.$inject = ["$mdTheming", "$mdUtil", "$compile", "$timeout"];
+MdChips.$inject = ["$mdTheming", "$mdUtil", "$compile", "$log", "$timeout"];
 
 angular
     .module('material.components.chips')
@@ -797,8 +805,7 @@ function MdContactChipsCtrl () {
 
 MdContactChipsCtrl.prototype.queryContact = function(searchText) {
   var results = this.contactQuery({'$query': searchText});
-  return this.filterSelected ?
-      results.filter(this.filterSelectedContacts.bind(this)) : results;
+  return results.filter(this.filterSelectedContacts.bind(this));
 };
 
 
@@ -833,6 +840,9 @@ angular
  *    contact's email address.
  * @param {string} md-contact-image The field name of the contact object representing the
  *    contact's image.
+ *
+ *
+ * // The following attribute has been removed but may come back.
  * @param {expression=} filter-selected Whether to filter selected contacts from the list of
  *    suggestions shown in the autocomplete.
  *
@@ -846,7 +856,6 @@ angular
  *       md-contact-name="name"
  *       md-contact-image="image"
  *       md-contact-email="email"
- *       md-filter-selected="ctrl.filterSelected"
  *       placeholder="To">
  *   </md-contact-chips>
  * </hljs>
@@ -865,7 +874,7 @@ var MD_CONTACT_CHIPS_TEMPLATE = '\
             md-search-text="$mdContactChipsCtrl.searchText"\
             md-items="item in $mdContactChipsCtrl.queryContact($mdContactChipsCtrl.searchText)"\
             md-item-text="$mdContactChipsCtrl.mdContactName"\
-            md-no-cache="$mdContactChipsCtrl.filterSelected"\
+            md-no-cache="true"\
             md-autoselect\
             placeholder="{{$mdContactChipsCtrl.contacts.length == 0 ?\
                 $mdContactChipsCtrl.placeholder : $mdContactChipsCtrl.secondaryPlaceholder}}">\
@@ -916,7 +925,6 @@ function MdContactChips ($mdTheming, $mdUtil) {
       contactName: '@mdContactName',
       contactImage: '@mdContactImage',
       contactEmail: '@mdContactEmail',
-      filterSelected: '=',
       contacts: '=ngModel',
       requireMatch: '=?mdRequireMatch'
     }

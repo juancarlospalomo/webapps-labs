@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.9.0
+ * v0.9.0-master-160f790
  */
 angular.module('ngMaterial', ["ng","ngAnimate","ngAria","material.core","material.core.gestures","material.core.theming.palette","material.core.theming","material.components.autocomplete","material.components.backdrop","material.components.bottomSheet","material.components.button","material.components.card","material.components.checkbox","material.components.chips","material.components.content","material.components.dialog","material.components.divider","material.components.gridList","material.components.icon","material.components.input","material.components.list","material.components.progressCircular","material.components.progressLinear","material.components.radioButton","material.components.select","material.components.sidenav","material.components.slider","material.components.sticky","material.components.subheader","material.components.swipe","material.components.switch","material.components.tabs","material.components.toast","material.components.toolbar","material.components.tooltip","material.components.whiteframe"]);
 (function() {
@@ -11349,9 +11349,10 @@ function MdAutocomplete ($mdTheming, $mdUtil) {
             </li>\
             ' + (function () {
               return noItemsTemplate
-                  ? '<li ng-if="!$mdAutocompleteCtrl.matches.length"\
-                        ng-hide="$mdAutocompleteCtrl.hidden"\
-                        md-autocomplete-parent-scope>' + noItemsTemplate + '</li>'
+                  ? '<li ng-if="!$mdAutocompleteCtrl.matches.length && !$mdAutocompleteCtrl.loading\
+                         && !$mdAutocompleteCtrl.hidden"\
+                         ng-hide="$mdAutocompleteCtrl.hidden"\
+                         md-autocomplete-parent-scope>' + noItemsTemplate + '</li>'
                   : '';
             })() + '\
           </ul>\
@@ -11566,17 +11567,19 @@ angular
  *
  * @description
  * `<md-chip-remove>`
- * Designates a button as a trigger to remove the chip.
+ * Designates an element to be used as the delete button for a chip. This
+ * element is passed as a child of the `md-chips` element.
  *
  * @usage
  * <hljs lang="html">
- *   <md-chip-template>{{$chip}}<button md-chip-remove>DEL</button></md-chip-template>
+ *   <md-chips><button md-chip-remove>DEL</button></md-chips>
  * </hljs>
  */
 
 
 /**
- *
+ * MdChipRemove Directive Definition.
+ * 
  * @param $compile
  * @param $timeout
  * @returns {{restrict: string, require: string[], link: Function, scope: boolean}}
@@ -12122,6 +12125,7 @@ var CHIP_REMOVE_TEMPLATE = '\
         class="md-chip-remove"\
         ng-if="!$mdChipsCtrl.readonly"\
         ng-click="$mdChipsCtrl.removeChipAndFocusInput($$replacedScope.$index)"\
+        type="button"\
         aria-hidden="true"\
         tabindex="-1">\
       <md-icon md-svg-icon="md-close"></md-icon>\
@@ -12133,7 +12137,7 @@ var CHIP_REMOVE_TEMPLATE = '\
 /**
  * MDChips Directive Definition
  */
-function MdChips ($mdTheming, $mdUtil, $compile, $timeout) {
+function MdChips ($mdTheming, $mdUtil, $compile, $log, $timeout) {
   return {
     template: function(element, attrs) {
       // Clone the element into an attribute. By prepending the attribute
@@ -12195,12 +12199,17 @@ function MdChips ($mdTheming, $mdUtil, $compile, $timeout) {
 
     // Set the chip remove, chip contents and chip input templates. The link function will put
     // them on the scope for transclusion later.
-    var chipRemoveTemplate   = getTemplateByQuery('[md-chip-remove]') || CHIP_REMOVE_TEMPLATE,
-        chipContentsTemplate = getTemplateByQuery('md-chip-template') || CHIP_DEFAULT_TEMPLATE,
-        chipInputTemplate    = getTemplateByQuery('md-autocomplete')
-            || getTemplateByQuery('input')
+    var chipRemoveTemplate   = getTemplateByQuery('md-chips>*[md-chip-remove]') || CHIP_REMOVE_TEMPLATE,
+        chipContentsTemplate = getTemplateByQuery('md-chips>md-chip-template') || CHIP_DEFAULT_TEMPLATE,
+        chipInputTemplate    = getTemplateByQuery('md-chips>md-autocomplete')
+            || getTemplateByQuery('md-chips>input')
             || CHIP_INPUT_TEMPLATE,
         staticChips = userTemplate.find('md-chip');
+
+    // Warn of malformed template. See #2545
+    if (userTemplate[0].querySelector('md-chip-template>*[md-chip-remove]')) {
+      $log.warn('invalid placement of md-chip-remove within md-chip-template.');
+    }
 
     function getTemplateByQuery (query) {
       if (!attr.ngModel) return;
@@ -12254,7 +12263,7 @@ function MdChips ($mdTheming, $mdUtil, $compile, $timeout) {
     };
   }
 }
-MdChips.$inject = ["$mdTheming", "$mdUtil", "$compile", "$timeout"];
+MdChips.$inject = ["$mdTheming", "$mdUtil", "$compile", "$log", "$timeout"];
 
 angular
     .module('material.components.chips')
@@ -12277,8 +12286,7 @@ function MdContactChipsCtrl () {
 
 MdContactChipsCtrl.prototype.queryContact = function(searchText) {
   var results = this.contactQuery({'$query': searchText});
-  return this.filterSelected ?
-      results.filter(this.filterSelectedContacts.bind(this)) : results;
+  return results.filter(this.filterSelectedContacts.bind(this));
 };
 
 
@@ -12313,6 +12321,9 @@ angular
  *    contact's email address.
  * @param {string} md-contact-image The field name of the contact object representing the
  *    contact's image.
+ *
+ *
+ * // The following attribute has been removed but may come back.
  * @param {expression=} filter-selected Whether to filter selected contacts from the list of
  *    suggestions shown in the autocomplete.
  *
@@ -12326,7 +12337,6 @@ angular
  *       md-contact-name="name"
  *       md-contact-image="image"
  *       md-contact-email="email"
- *       md-filter-selected="ctrl.filterSelected"
  *       placeholder="To">
  *   </md-contact-chips>
  * </hljs>
@@ -12345,7 +12355,7 @@ var MD_CONTACT_CHIPS_TEMPLATE = '\
             md-search-text="$mdContactChipsCtrl.searchText"\
             md-items="item in $mdContactChipsCtrl.queryContact($mdContactChipsCtrl.searchText)"\
             md-item-text="$mdContactChipsCtrl.mdContactName"\
-            md-no-cache="$mdContactChipsCtrl.filterSelected"\
+            md-no-cache="true"\
             md-autoselect\
             placeholder="{{$mdContactChipsCtrl.contacts.length == 0 ?\
                 $mdContactChipsCtrl.placeholder : $mdContactChipsCtrl.secondaryPlaceholder}}">\
@@ -12396,7 +12406,6 @@ function MdContactChips ($mdTheming, $mdUtil) {
       contactName: '@mdContactName',
       contactImage: '@mdContactImage',
       contactEmail: '@mdContactEmail',
-      filterSelected: '=',
       contacts: '=ngModel',
       requireMatch: '=?mdRequireMatch'
     }
@@ -12502,6 +12511,15 @@ function MdTab () {
 
     scope.$watch('active', function (active) { if (active) ctrl.select(data.getIndex()); });
     scope.$watch('disabled', function () { ctrl.refreshIndex(); });
+    scope.$watch(
+        function () {
+          return Array.prototype.indexOf.call(tabs, element[0]);
+        },
+        function (newIndex) {
+          data.index = newIndex;
+          ctrl.updateTabOrder();
+        }
+    );
     scope.$on('$destroy', function () { ctrl.removeTab(data); });
 
     function getLabel () {
@@ -12578,7 +12596,7 @@ function MdTabsController ($scope, $element, $window, $timeout, $mdConstant, $md
   ctrl.offsetLeft = 0;
   ctrl.hasContent = false;
   ctrl.hasFocus = false;
-  ctrl.lastClick = false;
+  ctrl.lastClick = true;
 
   ctrl.redirectFocus = redirectFocus;
   ctrl.attachRipple = attachRipple;
@@ -12597,6 +12615,7 @@ function MdTabsController ($scope, $element, $window, $timeout, $mdConstant, $md
   ctrl.refreshIndex = refreshIndex;
   ctrl.incrementSelectedIndex = incrementSelectedIndex;
   ctrl.updateInkBarStyles = updateInkBarStyles;
+  ctrl.updateTabOrder = $mdUtil.debounce(updateTabOrder, 100);
 
   init();
 
@@ -12649,6 +12668,17 @@ function MdTabsController ($scope, $element, $window, $timeout, $mdConstant, $md
         break;
     }
     ctrl.lastClick = false;
+  }
+
+  function updateTabOrder () {
+    var selectedItem = ctrl.tabs[$scope.selectedIndex],
+        focusItem = ctrl.tabs[ctrl.focusIndex];
+    ctrl.tabs = ctrl.tabs.sort(function (a, b) {
+      return a.index - b.index;
+    });
+    $scope.selectedIndex = ctrl.tabs.indexOf(selectedItem);
+    ctrl.focusIndex = ctrl.tabs.indexOf(focusItem);
+    $timeout(updateInkBarStyles, 0, false);
   }
 
   function incrementSelectedIndex (inc, focus) {
